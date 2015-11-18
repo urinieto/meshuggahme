@@ -1,0 +1,10 @@
+On Debian, requires youtube-dl, download from: https://rg3.github.io/youtube-dl/
+
+requires package libav-tools: sudo apt-get install libav-tools
+
+Four environment variables need to be set to use the muxer:
+
+MESHUGGAME_AVCONV_PATH - location of avconv (from libav-tools, probably /usr/bin/avconv, ffmpeg should drop-in)
+MESHUGGAME_YTDL_PATH - location of youtube-dl, it's wherever you put it (make sure you chmod +x'ed it)
+MUSHUGGAME_DL_PATH - Where to drop videos downloaded from youtube
+MUSHUGGAME_OUTPUT_PATH - where to drop output files
