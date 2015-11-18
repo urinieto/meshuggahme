@@ -10,7 +10,8 @@ os.environ['MUSHUGGAME_OUTPUT_PATH'] = '/home/phaedrus/tmp/meshuggame/out'
 from muxer import Muxer
 
 gojira = 'https://www.youtube.com/watch?v=BGHlZwMYO9g'
-spears = 'https://www.youtube.com/watch?v=LOZuxwVk7TU'
+#spears = 'https://www.youtube.com/watch?v=LOZuxwVk7TU'
+spears = 'https://youtu.be/LOZuxwVk7TU'
 
 if __name__ == '__main__':
     gojira_muxer = Muxer(yt_url=gojira)

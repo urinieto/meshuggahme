@@ -9,6 +9,7 @@
 import os
 import re
 import subprocess
+import requests
 
 class MissingYouTubeURL(Exception):
     pass
@@ -26,14 +27,25 @@ class Muxer:
         self.audio_out = None
         self.remux_out = None
 
-    def download_video(self, yt_url=None):
+    def normalize_yt_url(self, yt_url):
         if yt_url is None: 
             if self.yt_url is None:
                 raise MissingYouTubeURL
             yt_url = self.yt_url
 
-        # A long time ago, I was a perl programmer...  Sorry.
-        self.ytid = dict([kv.split('=') for kv in yt_url.split('?')[1].split('&')])['v']
+        ytdomain = yt_url.split('/')[2]
+
+        if ytdomain.endswith('youtube.com'):
+            # A long time ago, I was a perl programmer...  Sorry.
+            self.ytid = dict([kv.split('=') for kv in yt_url.split('?')[1].split('&')])['v']
+            return yt_url
+
+        self.ytid = yt_url.split('/')[3]
+        r = requests.head(yt_url)
+        return r.headers['location']
+
+    def download_video(self, yt_url=None):
+        yt_url = self.normalize_yt_url(yt_url)
 
         #youtube-dl --no-playlist -o {download-path}/%(id)s.%(ext)s {youtube-long-url}
         subprocess.call(
