@@ -25,7 +25,7 @@ body > div:first-child {
 
 .content {
 	margin: 0 auto;
-	width: 600px;
+	width: 610px;
 	position: relative;
 	top: 100px;
 	text-align: center;
@@ -42,8 +42,8 @@ body > div:first-child {
 }
 
 .video-container {
-	height: 400px;
+	height: 410px;
     width: 100%;
     background-color: black;
-    border: 5px solid #999;
+    border: 5px solid #111;
 }
