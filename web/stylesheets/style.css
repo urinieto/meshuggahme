@@ -1,28 +1,49 @@
 
-.content {
+body {
+	background-color: black;
 	max-width: 1400px;
 	height: 1000px;
 	background: url(../assets/bg.jpg) no-repeat center center;
 }
 
-.content > div:first-child {
+body > div:first-child {
 	right: 7px;
 	position: relative;
 }
 
-.url-input {
-	width: 600px;
-	top: 213px;
-	position: relative;
+.logo {
+	margin-top: 20px;
+	width: 700px;
 	margin: 0 auto;
+	position: relative;
+	top: 20px;
+}
+
+.logo > img {
+	width: 700px;
+}
+
+.content {
+	margin: 0 auto;
+	width: 600px;
+	position: relative;
+	top: 100px;
+	text-align: center;
+}
+
+.url-input {
+	width: 100%;
+	margin-bottom: 15px;
+	text-align: center;
+}
+
+.btn {
+	margin-bottom: 30px;
 }
 
 .video-container {
 	height: 400px;
-    width: 600px;
+    width: 100%;
     background-color: black;
-    top: 313px;
-    position: relative;
     border: 5px solid #999;
-    margin: 0 auto;
 }
