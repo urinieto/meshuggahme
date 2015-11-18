@@ -1,0 +1,28 @@
+
+.content {
+	max-width: 1400px;
+	height: 1000px;
+	background: url(../assets/bg.jpg) no-repeat center center;
+}
+
+.content > div:first-child {
+	right: 7px;
+	position: relative;
+}
+
+.url-input {
+	width: 600px;
+	top: 213px;
+	position: relative;
+	margin: 0 auto;
+}
+
+.video-container {
+	height: 400px;
+    width: 600px;
+    background-color: black;
+    top: 313px;
+    position: relative;
+    border: 5px solid #999;
+    margin: 0 auto;
+}
