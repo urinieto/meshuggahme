@@ -53,8 +53,8 @@ body > div:first-child {
 	/*height: 300px;*/
 }
 .carousel-video{
-	width: 300px;
-	height: 200px;
+	height: 410px;
+	width: 100%;
 }
 .nav-tabs > li > a {
 	border-radius: 0;
@@ -76,4 +76,7 @@ body > div:first-child {
 	border-radius: 0;
 	text-align: center;
 	padding: 10px;
+}
+.video-header-tools{
+	height: 120px;
 }
