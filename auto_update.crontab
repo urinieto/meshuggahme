@@ -1,0 +1,2 @@
+#MIN HOUR DAY MONTH DAYWK   CMD
+*/5  *    *   *     *       /home/meshuggah/meshuggahme/auto_updater.sh
