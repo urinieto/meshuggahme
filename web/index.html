@@ -6,13 +6,75 @@
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1">
 
 	<head>
-		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	</head>
-	<body style="background-image:url(assets/bg.jpg);">
 
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+		<script src="javascripts/jsscript.js"></script>
+	</head>	
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="logo">
+					<img src="assets/logo.png" />
+				</div>
+				<div class="content">
+					<input placeholder="Enter a video url" class="form-control url-input" />
+					<button class="btn">MESHUGGAHME!</button>
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="active">
+							<a href="#home" role="tab" data-toggle="tab">
+								<icon class="fa fa-home"></icon> Home
+							</a>
+						</li>
+						<li class="featured-li"><a href="#featured" role="tab" data-toggle="tab">
+							<i class="fa fa-featured"></i> Featured
+						</a>
+						</li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane fade active in" id="home">
+
+							<div class="video-container">
+								<iframe class="embedded-video" src="https://www.youtube.com/embed/qc98u-eGzlc" frameborder="0" allowfullscreen></iframe>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="featured">
+							<div id="featured-videos-carousel" class="carousel slide" data-ride="carousel">
+								<!-- Indicators -->
+								<ol class="carousel-indicators">
+									<li data-target="#featured-videos-carousel" data-slide-to="0" class="active"></li>
+									<li data-target="#featured-videos-carousel" data-slide-to="1"></li>
+									<li data-target="#featured-videos-carousel" data-slide-to="2"></li>
+								</ol>
+								<!-- Wrapper for slides -->
+								<div class="carousel-inner" role="listbox">
+									<div class="item  active video-container">
+										<iframe class="carousel-video embedded-video" src="//www.youtube.com/embed/-w-58hQ9dLk" frameborder="0" allowfullscreen></iframe>
+									</div>
+									<div class="item ">
+										<iframe class="carousel-video embedded-video' video-container"  src="https://www.youtube.com/embed/j_ky4u_EdYc" frameborder="0" allowfullscreen></iframe>
+									</div>
+									<div class="item">
+										<iframe  class="carousel-video embedded-video' video-container"  src="https://www.youtube.com/embed/ivmAbwVyRes" frameborder="0" allowfullscreen></iframe>
+									</div>
+									<!-- Left and right controls -->
+									<a class="left carousel-control" href="#featured-videos-carousel" role="button" data-slide="prev">
+										<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+										<span class="sr-only">Previous</span>
+									</a>
+									<a class="right carousel-control" href="#featured-videos-carousel" role="button" data-slide="next">
+										<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+										<span class="sr-only">Next</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>	
+			</div>
+		</div>	
 	</body>
 </html>
