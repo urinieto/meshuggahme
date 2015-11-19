@@ -4,7 +4,13 @@ requires package libav-tools: sudo apt-get install libav-tools
 
 Four environment variables need to be set to use the muxer:
 
-MESHUGGAME_AVCONV_PATH - location of avconv (from libav-tools, probably /usr/bin/avconv, ffmpeg should drop-in)
-MESHUGGAME_YTDL_PATH - location of youtube-dl, it's wherever you put it (make sure you chmod +x'ed it)
-MUSHUGGAME_DL_PATH - Where to drop videos downloaded from youtube
-MUSHUGGAME_OUTPUT_PATH - where to drop output files
+MESHUGGAHME_AVCONV_PATH - location of avconv (from libav-tools, probably /usr/bin/avconv, ffmpeg should drop-in)
+MESHUGGAHME_YTDL_PATH - location of youtube-dl, it's wherever you put it (make sure you chmod +x'ed it)
+MUSHUGGAHME_DL_PATH - Where to drop videos downloaded from youtube
+MUSHUGGAHME_OUTPUT_PATH - where to drop output files
+
+For the muxer service, you'll also need to set the output URL env variable:
+
+MUSHUGGAHME_OUTPUT_URL
+
+(This will depend on how you've setup nginx or apache)

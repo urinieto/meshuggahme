@@ -17,10 +17,10 @@ class MissingYouTubeURL(Exception):
 class Muxer:
     def __init__(self, yt_url=None):
         self.yt_url = yt_url
-        self.ytdl = os.environ['MESHUGGAME_YTDL_PATH']
-        self.avconv = os.environ['MESHUGGAME_AVCONV_PATH']
-        self.download_dir = os.environ['MUSHUGGAME_DL_PATH']
-        self.output_dir = os.environ['MUSHUGGAME_OUTPUT_PATH']
+        self.ytdl = os.environ['MESHUGGAHME_YTDL_PATH']
+        self.avconv = os.environ['MESHUGGAHME_AVCONV_PATH']
+        self.download_dir = os.environ['MUSHUGGAHME_DL_PATH']
+        self.output_dir = os.environ['MUSHUGGAHME_OUTPUT_PATH']
 
         self.dl_file = None
         self.silent_video_out = None
@@ -69,7 +69,7 @@ class Muxer:
 
         #avconv -i {download-path}/%(id)s.%(ext)s -map 0:1 -c copy {output-path}/%(id)s.aac
         subprocess.call(  # Extract video
-            '{avconv} -i {dl_video} -map 0:0 -c copy {output_path}/{ytid}-silent.mp4'.format(
+            '{avconv} -y -i {dl_video} -map 0:0 -c copy {output_path}/{ytid}-silent.mp4'.format(
                 avconv = self.avconv,
                 dl_video = self.dl_file,
                 output_path = self.output_dir,
@@ -77,7 +77,7 @@ class Muxer:
             ).split(' ')
         )
         subprocess.call(  # Extract audio
-            '{avconv} -i {dl_video} -map 0:1 -c copy {output_path}/{ytid}.aac'.format(
+            '{avconv} -y -i {dl_video} -map 0:1 -c copy {output_path}/{ytid}.aac'.format(
                 avconv = self.avconv,
                 dl_video = self.dl_file,
                 output_path = self.output_dir,
@@ -99,7 +99,7 @@ class Muxer:
 
     def remux(self, new_audio_track):
         subprocess.call(
-            '{avconv} -i {silent_video} -i {new_audio_track} -c copy {output_path}/{ytid}.mp4'.format(
+            '{avconv} -y -i {silent_video} -i {new_audio_track} -c copy {output_path}/{ytid}.mp4'.format(
                 avconv = self.avconv,
                 silent_video = self.silent_video_out,
                 new_audio_track = new_audio_track,
@@ -107,6 +107,14 @@ class Muxer:
                 ytid = self.ytid
             ).split(' ')
         )
+        self.remux_out = '{output_path}/{ytid}.mp4'.format(
+            output_path = self.output_dir,
+            ytid = self.ytid
+        )
+        return self.remux_out
+
+    def get_output_file():
+        return self.remux_out
 
 # Needed methods:
 #   Mux audio+video
