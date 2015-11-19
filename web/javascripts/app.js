@@ -32,7 +32,7 @@ $( document ).ready(function() {
 
         $.ajax({url: "http://systest-6/muxer/mux_demux?yt_url=" + $(".js-url-input").val(), dataType: "json", type: 'GET'})
             .done(function(results) {
-                var url = results["video-url"];
+                var url = results["video_url"];
                 $(".js-video").attr("src", url);
                 $(".js-video")[0].load();
 
@@ -43,7 +43,7 @@ $( document ).ready(function() {
                 $(".js-loading").hide();
                 $(".js-submit").show();
 
-                console.error( evt );
+                alert( "error" );
             });
     }
 
