@@ -26,9 +26,9 @@ $( document ).ready(function() {
         $(".js-submit").hide();
         $(".js-loading").show();
         $(".js-loading-sound")[0].play();
-        var clock = $('.load-clock').FlipClock( {
-            interval: 10
-        });
+        //var clock = $('.load-clock').FlipClock( {
+        //    interval: 10
+        //});
 
         $.ajax({url: "http://systest-6/muxer/mux_demux?yt_url=" + $(".js-url-input").val(), dataType: "json", type: 'GET'})
             .done(function(results) {
