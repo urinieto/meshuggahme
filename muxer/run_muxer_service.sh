@@ -10,4 +10,16 @@ else
     export MUSHUGGAHME_OUTPUT_URL=http://localhost/video
 fi
 
-python meshuggahme_muxer.py 
+if [ "$MESHUGGAHME_VENV" ]; then
+    source $MESHUGGAHME_VENV/bin/activate
+fi
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+
+cd $REPO_ROOT/muxer
+
+if [ "$MESHUGGAHME_USE_GUNICORN" ]; then
+    $MESHUGGAHME_VENV/bin/gunicorn -D -b 127.0.0.1:5000 -w 4 meshuggahme_muxer:app
+else
+    python meshuggahme_muxer.py 
+fi
