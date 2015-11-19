@@ -112,3 +112,26 @@ body > div:first-child {
     66%  {color: red;}
     100%  {color: white;}
 }
+
+
+/*.modal-dialog , .modal, .modal-body, .modal-content{*/
+	/*width: 90%;*/
+	/*height: 90%;*/
+/*}*/
+
+/*.js-loading {*/
+	/*text-align: center;*/
+/*}*/
+ /*.load-clock {*/
+	 /*margin-top: 30px;*/
+	/*text-align: center;*/
+/*}*/
+
+
+/*.js-loading-gif{*/
+	/*width:400px;*/
+	/*height:400px;*/
+/*}*/
+/*.modal-content {*/
+	/*/!*background: url(../assets/bg.jpg) no-repeat center center;*!/*/
+/*}*/
