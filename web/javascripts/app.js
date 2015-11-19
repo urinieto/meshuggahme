@@ -42,7 +42,7 @@ $( document ).ready(function() {
                 $(".js-loading").hide();
                 $(".js-submit").show();
 
-                alert( "error" );
+                console.error( evt );
             });
     }
 

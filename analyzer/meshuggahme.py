@@ -88,7 +88,8 @@ def improve_log_no_loudness(feats):
 def improve_normal(feats):
     return feats
 
-def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine', output_file='output.wav'):
+def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine', 
+                output_file='output.wav', original_w=8):
     """Converts the given input file into a Meshuggah track and saves it into disk as a wav file.
 
     Parameters
@@ -148,7 +149,9 @@ def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine'
                 break
 
         # Concatenate new audio
-        y[start_end_samples[0]:start_end_samples[1]] = x[:start_end_samples[1] - start_end_samples[0]]
+        w = np.min([(D[onset_id][0] + np.abs(np.min(D))) * original_w, 1])  # Normalize weight
+        y[start_end_samples[0]:start_end_samples[1]] = y[start_end_samples[0]:start_end_samples[1]] * w + \
+            x[:start_end_samples[1] - start_end_samples[0]] * (1 - w)
 
     # Write new audio file
     librosa.output.write_wav(output_file, y, sr=SRATE)
@@ -171,7 +174,7 @@ if __name__ == "__main__":
     # TODO add command line args to support computing original models
     if len(sys.argv) < 2:
         print "Usage: python %s input_file" % sys.argv[0]
-        sys.exit(1)
+        sys.exit(1  )
     input_file = sys.argv[1]
     metric = 'correlation'
     onset_dicts, X, Y, Z = load_models("../notes/")
@@ -180,3 +183,4 @@ if __name__ == "__main__":
 
     meshuggahme(input_file, X, improve_func=improve_normal, onset_dicts=onset_dicts,
                 metric=metric, output_file=output_file, original_w=original_w)
+    print "Created %s" % output_file
