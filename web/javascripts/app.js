@@ -33,7 +33,8 @@ $( document ).ready(function() {
         $.ajax({url: "http://systest-6/muxer/mux_demux?yt_url=" + $(".js-url-input").val(), dataType: "json", type: 'GET'})
             .done(function(results) {
                 var url = results["video-url"];
-                $(".js-video source").attr("src", url);
+                $(".js-video").attr("src", url);
+                $(".js-video")[0].load();
 
                 $(".js-loading").hide();
                 $(".js-submit").show();
