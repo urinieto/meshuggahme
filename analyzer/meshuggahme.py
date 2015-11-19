@@ -14,9 +14,6 @@ N_MFCC = 14
 N_DECIMALS = 3
 N_CHROMA = 12
 
-# TODO parameterize this
-onset_dir = "../onsets"
-
 def compute_features(audio_file):
     """Computes the onsets and the MFCC and CQT onset-synchronous features from the given
     audio file path.
@@ -88,8 +85,8 @@ def improve_log_no_loudness(feats):
 def improve_normal(feats):
     return feats
 
-def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine',
-                output_file='output.wav', original_w=8):
+def meshuggahme(input_file, features, improve_func, onset_dicts, onset_dir,
+                metric='cosine', output_file='output.wav', original_w=8):
     """Converts the given input file into a Meshuggah track and saves it into disk as a wav file.
 
     Parameters
@@ -101,7 +98,9 @@ def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine'
     improve_func : function
         One of the _improve_ functions (see above)
     onset_dicts : dictionary
-        Onsets model (see create_meshuggah_onsets)
+        Onsets model (see generate_data script)
+    onset_dir : str
+        Path to directory with meshuggah onset audio files
     metric : str
         One of the scipy.spatial.distance functions
     output_file : str
@@ -176,6 +175,7 @@ if __name__ == "__main__":
     parser.add_argument('-w','--original-weight', dest="original_weight", type=int, help='Weight of the original song in the output', default=6.5)
     parser.add_argument('-m','--model', dest="model", help='Feature model to use for finding onset similarities (mfcc, cqt, or chroma)', default="mfcc")
     parser.add_argument('-d','--distance-metric', dest="metric", help='Distance metric to use when finding onset similarities (cosine)', default="correlation")
+    parser.add_argument('-a','--onset-dir', dest='onset_dir', help='Directory with meshuggah onset audio files', default="../onsets")
     parser.add_argument('-o','--output-file', dest="output_file", help='Output file', default="output.wav")
 
     args = parser.parse_args()
@@ -193,7 +193,8 @@ if __name__ == "__main__":
         model = Y
     #TODO support chroma
 
-    meshuggahme(input_file, model, improve_func=improve_normal, onset_dicts=onset_dicts,
+    meshuggahme(input_file, model, improve_func=improve_normal,
+                onset_dicts=onset_dicts, onset_dir=args.onset_dir,
                 metric=args.metric, output_file=args.output_file,
                 original_w=args.original_weight)
 
