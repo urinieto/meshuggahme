@@ -31,6 +31,8 @@ function meshuggahme_start() {
 function meshuggahme_stop() {
     if [ "$MESHUGGAHME_PIDFILE" ]; then
         kill $(cat $MESHUGGAHME_PIDFILE)
+    else
+        kill $(ps aux | grep -v awk | awk '/gunicorn/{print$2}')
     fi
 }
 
