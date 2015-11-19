@@ -39,6 +39,16 @@ body > div:first-child {
 
 .btn {
 	margin-bottom: 30px;
+    font-size: 30px;
+    border: 3px solid black;
+    background-color: #AB8C76;
+    padding: 5px 20px;
+    border-radius: 6px;
+    opacity: .95;
+}
+
+.btn:hover {
+	opacity: 1;
 }
 
 .embedded-video {
@@ -49,7 +59,7 @@ body > div:first-child {
 }
 
 #featuredVideoCarousel{
-	interval: 1000
+	interval: 10000
 	/*width: 400px;*/
 	/*height: 300px;*/
 }
@@ -84,4 +94,21 @@ body > div:first-child {
 }
 .video-header-tools{
 	height: 120px;
+}
+
+
+.loading {
+	font-size: 80px;
+	position: absolute;
+	left: 22%;
+    top: 50px;
+    opacity: .35;
+	animation: loading-transitions .5s infinite;
+}
+
+@keyframes loading-transitions {
+    0%   {color: black;}
+    33%  {color: white;}
+    66%  {color: red;}
+    100%  {color: white;}
 }
