@@ -15,7 +15,6 @@
 		<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.css">
 
-		https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js
 		<script src="javascripts/app.js"></script>
 	</head>	
 	<body>
@@ -25,7 +24,7 @@
 					<img src="assets/logo.png" />
 				</div>
 				<div class="content">
-					<input placeholder="Enter a video url" class="form-control url-input" />
+					<input placeholder="Enter a video url" class="form-control url-input js-url-input" />
 					<button class="btn js-submit">MESHUGGAH ME!</button>
 					<div class="js-loading">
 						<img class="js-loading-gif" src="http://media4.giphy.com/media/oeV7bEckRyRH2/100.gif" />
@@ -49,7 +48,9 @@
 						<div class="tab-pane fade active in" id="home">
 
 							<div class="video-container">
-								<iframe class="embedded-video" src="https://www.youtube.com/embed/qc98u-eGzlc" frameborder="0" allowfullscreen></iframe>
+								<video class="js-video" width="590" height="410" controls>
+  									<source src="" type="video/mp4">
+								</video>								
 							</div>
 						</div>
 						<div class="tab-pane fade" id="featured">

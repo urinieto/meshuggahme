@@ -16,14 +16,35 @@ $( document ).ready(function() {
         }
     })
 
-    $(".js-submit").click(function() {
-        $(this).hide();
+    $(window).keypress(function(evt) {
+        if(evt.keyCode == 13)
+            submit();
+    });
+    $(".js-submit").click(submit);
+
+    function submit() {
+        $(".js-submit").hide();
         $(".js-loading").show();
         $(".js-loading-sound")[0].play();
-        var clock = $('.load-clock').FlipClock( {
-            interval: 10
-        });
-    });
+        //var clock = $('.load-clock').FlipClock( {
+        //    interval: 10
+        //});
+
+        $.ajax({url: "http://systest-6/muxer/mux_demux?yt_url=" + $(".js-url-input").val(), dataType: "json", type: 'GET'})
+            .done(function(results) {
+                var url = results["video-url"];
+                $(".js-video source").attr("src", url);
+
+                $(".js-loading").hide();
+                $(".js-submit").show();
+            })
+            .fail(function(evt) {
+                $(".js-loading").hide();
+                $(".js-submit").show();
+
+                alert( "error" );
+            });
+    }
 
 
 });
