@@ -49,6 +49,7 @@ body > div:first-child {
 }
 
 #featuredVideoCarousel{
+	interval: 1000
 	/*width: 400px;*/
 	/*height: 300px;*/
 }
