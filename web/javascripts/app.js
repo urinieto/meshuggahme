@@ -30,7 +30,7 @@ $( document ).ready(function() {
             interval: 10
         });
 
-        $.ajax({url: "http://systest-6/muxer/mux_demux?yt_url=https://www.youtube.com/watch?v=qc98u-eGzlc", dataType: "json", type: 'GET'})
+        $.ajax({url: "http://systest-6/muxer/mux_demux?yt_url=" + $(".js-url-input").val(), dataType: "json", type: 'GET'})
             .done(function(results) {
                 var url = results["video-url"];
                 $(".js-video source").attr("src", url);
