@@ -11,9 +11,9 @@ if [ -e meshuggahme.default ]; then
 else
     export MESHUGGAHME_AVCONV_PATH=/usr/bin/avconv
     export MESHUGGAHME_YTDL_PATH=/home/phaedrus/repos/meshuggahme/muxer/youtube-dl
-    export MUSHUGGAHME_DL_PATH=/home/phaedrus/tmp/meshuggahme/dl
-    export MUSHUGGAHME_OUTPUT_PATH=/home/phaedrus/tmp/meshuggahme/out
-    export MUSHUGGAHME_OUTPUT_URL=http://localhost/video
+    export MESHUGGAHME_DL_PATH=/home/phaedrus/tmp/meshuggahme/dl
+    export MESHUGGAHME_OUTPUT_PATH=/home/phaedrus/tmp/meshuggahme/out
+    export MESHUGGAHME_OUTPUT_URL=http://localhost/video
 fi
 
 if [ "$MESHUGGAHME_VENV" ]; then

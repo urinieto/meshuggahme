@@ -4,8 +4,8 @@ import os
 
 os.environ['MESHUGGAHME_AVCONV_PATH'] = '/usr/bin/avconv'
 os.environ['MESHUGGAHME_YTDL_PATH'] = '/home/phaedrus/repos/meshuggahme/muxer/youtube-dl'
-os.environ['MUSHUGGAHME_DL_PATH'] = '/home/phaedrus/tmp/meshuggahme/dl'
-os.environ['MUSHUGGAHME_OUTPUT_PATH'] = '/home/phaedrus/tmp/meshuggahme/out'
+os.environ['MESHUGGAHME_DL_PATH'] = '/home/phaedrus/tmp/meshuggahme/dl'
+os.environ['MESHUGGAHME_OUTPUT_PATH'] = '/home/phaedrus/tmp/meshuggahme/out'
 
 from muxer import Muxer
 

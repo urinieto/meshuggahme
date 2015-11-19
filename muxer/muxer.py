@@ -19,8 +19,8 @@ class Muxer:
         self.yt_url = yt_url
         self.ytdl = os.environ['MESHUGGAHME_YTDL_PATH']
         self.avconv = os.environ['MESHUGGAHME_AVCONV_PATH']
-        self.download_dir = os.environ['MUSHUGGAHME_DL_PATH']
-        self.output_dir = os.environ['MUSHUGGAHME_OUTPUT_PATH']
+        self.download_dir = os.environ['MESHUGGAHME_DL_PATH']
+        self.output_dir = os.environ['MESHUGGAHME_OUTPUT_PATH']
 
         self.dl_file = None
         self.silent_video_out = None

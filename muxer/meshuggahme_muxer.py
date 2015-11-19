@@ -8,12 +8,14 @@ from muxer import Muxer
 app_name = 'meshuggahme_muxer'
 app = Flask(app_name)
 
-video_url_prefix = os.environ.get('MUSHUGGAHME_OUTPUT_URL', 'http://localhost:5000/video')
+video_url_prefix = os.environ.get('MESHUGGAHME_OUTPUT_URL', 'http://localhost:5000/video')
 
 pidfile = os.environ.get('MESHUGGAHME_PIDFILE', None)
 if pidfile and os.path.exists(os.path.dirname(pidfile)):
     with open(pidfile, 'w') as f:
         f.write(os.getpid())
+
+model_dir = os.environ.get('M
 
 @app.route('/')
 def app_version():
