@@ -10,6 +10,11 @@ app = Flask(app_name)
 
 video_url_prefix = os.environ.get('MUSHUGGAHME_OUTPUT_URL', 'http://localhost:5000/video')
 
+pidfile = os.environ.get('MESHUGGAHME_PIDFILE', None)
+if os.path.exists(os.path.dirname(pidfile)):
+    with open(pidfile, 'w') as f:
+        f.write(os.getpid())
+
 @app.route('/')
 def app_version():
     return json.dumps({'app_name': app_name, 'version': 'DUCT_TAPED_DEMO'})
