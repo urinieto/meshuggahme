@@ -14,3 +14,20 @@ For the muxer service, you'll also need to set the output URL env variable:
 MUSHUGGAHME_OUTPUT_URL
 
 (This will depend on how you've setup nginx or apache)
+
+API:
+
+GET /muxer/
+  return json document with the app_name and a version string
+
+GET /muxer/mux_demux?yt_url=<yt_url>
+POST /muxer/mux_demux body: yt_url=<yt_url>
+  yt_url: Youtube URL.  Can be long or short (youtu.be)
+  Synchronous call to pull down a video from youtube and meshuggahfy the audio
+  returns json document: {'video_url': <video_url>}
+  The video url is the drop location of the processed video, and will be statically served by nginx
+
+There are no other API calls at this time.  This is currently running on systest-6.
+(I may add an async version)
+
+So, a GET against http://systest-6/muxer/mux_demux?yt_url=<url>  will get you a video link.
