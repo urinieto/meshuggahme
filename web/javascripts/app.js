@@ -20,6 +20,9 @@ $( document ).ready(function() {
         $(this).hide();
         $(".js-loading").show();
         $(".js-loading-sound")[0].play();
+        var clock = $('.load-clock').FlipClock( {
+            interval: 10
+        });
     });
 
 
