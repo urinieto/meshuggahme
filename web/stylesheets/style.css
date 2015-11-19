@@ -85,3 +85,20 @@ body > div:first-child {
 .video-header-tools{
 	height: 120px;
 }
+
+
+.loading {
+	font-size: 80px;
+	position: absolute;
+	left: 22%;
+    top: 50px;
+    opacity: .35;
+	animation: loading-transitions .5s infinite;
+}
+
+@keyframes loading-transitions {
+    0%   {color: black;}
+    33%  {color: white;}
+    66%  {color: red;}
+    100%  {color: white;}
+}
