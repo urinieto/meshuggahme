@@ -1,6 +1,6 @@
+import argparse
 import glob
 import librosa
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pickle
@@ -67,11 +67,11 @@ def compute_features(audio_file):
     chroma = librosa.feature.chroma_cqt(y=y_harmonic, sr=SRATE, hop_length=HOP_SIZE)
 
     # Synchronize features to onsets
-    mfcc_sync = librosa.feature.sync(mfcc, librosa.time_to_frames(onset_times, sr=SRATE, 
+    mfcc_sync = librosa.feature.sync(mfcc, librosa.time_to_frames(onset_times, sr=SRATE,
                                                                   hop_length=HOP_SIZE), pad=False)
-    cqt_sync = librosa.feature.sync(cqt, librosa.time_to_frames(onset_times, sr=SRATE, 
+    cqt_sync = librosa.feature.sync(cqt, librosa.time_to_frames(onset_times, sr=SRATE,
                                                                 hop_length=HOP_SIZE), pad=False)
-    chroma_sync = librosa.feature.sync(chroma, librosa.time_to_frames(onset_times, sr=SRATE, 
+    chroma_sync = librosa.feature.sync(chroma, librosa.time_to_frames(onset_times, sr=SRATE,
                                                                       hop_length=HOP_SIZE), pad=False)
 
     return y, onset_times, mfcc_sync, cqt_sync, chroma_sync
@@ -88,7 +88,7 @@ def improve_log_no_loudness(feats):
 def improve_normal(feats):
     return feats
 
-def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine', 
+def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine',
                 output_file='output.wav', original_w=8):
     """Converts the given input file into a Meshuggah track and saves it into disk as a wav file.
 
@@ -171,16 +171,30 @@ def load_models(model_dir):
 
 
 if __name__ == "__main__":
-    # TODO add command line args to support computing original models
-    if len(sys.argv) < 2:
-        print "Usage: python %s input_file" % sys.argv[0]
-        sys.exit(1  )
-    input_file = sys.argv[1]
-    metric = 'correlation'
-    onset_dicts, X, Y, Z = load_models("../notes/")
-    output_file = "output.wav"
-    original_w = 6.5
+    parser = argparse.ArgumentParser(description='Turn any song into a meshuggah song!')
+    parser.add_argument('input_file', help='Input song file path')
+    parser.add_argument('-w','--original-weight', dest="original_weight", type=int, help='Weight of the original song in the output', default=6.5)
+    parser.add_argument('-m','--model', dest="model", help='Feature model to use for finding onset similarities (mfcc, cqt, or chroma)', default="mfcc")
+    parser.add_argument('-d','--distance-metric', dest="metric", help='Distance metric to use when finding onset similarities (cosine)', default="correlation")
+    parser.add_argument('-o','--output-file', dest="output_file", help='Output file', default="output.wav")
 
-    meshuggahme(input_file, X, improve_func=improve_normal, onset_dicts=onset_dicts,
-                metric=metric, output_file=output_file, original_w=original_w)
-    print "Created %s" % output_file
+    args = parser.parse_args()
+
+    if (len(sys.argv) < 2):
+        parser.print_help()
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+    onset_dicts, X, Y, Z = load_models("../notes/")
+
+    if args.model == 'mfcc':
+        model = X
+    elif args.model == 'cqt':
+        model = Y
+    #TODO support chroma
+
+    meshuggahme(input_file, model, improve_func=improve_normal, onset_dicts=onset_dicts,
+                metric=args.metric, output_file=args.output_file,
+                original_w=args.original_weight)
+
+    print "Created %s" % args.output_file
