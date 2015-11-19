@@ -12,6 +12,7 @@ HOP_SIZE = 1024
 CQT_BINS = 90
 N_MFCC = 14
 N_DECIMALS = 3
+N_CHROMA = 12
 
 # TODO parameterize this
 onset_dir = "../onsets"
@@ -35,6 +36,8 @@ def compute_features(audio_file):
         MFCC synchronized to the onsets
     cqt_sync : np.array
         CQT features synchronized to the onsets
+    chroma_sync : np.array
+        Chroma features synchronized to the onsets
     """
     # Read audio file
     y, sr = librosa.load(audio_file, sr=SRATE)
@@ -55,97 +58,38 @@ def compute_features(audio_file):
     mfcc = librosa.feature.mfcc(y=y, sr=SRATE, hop_length=HOP_SIZE, n_mfcc=N_MFCC)
 
     # Compute Constant-Q Transform
-#     import pdb; pdb.set_trace()
     cqt = librosa.logamplitude(librosa.cqt(y, sr=SRATE, hop_length=HOP_SIZE,
                                            n_bins=CQT_BINS) ** 2,
                                ref_power=np.max)
 
+    # Compute chromagram
+    y_harmonic, y_percussive = librosa.effects.hpss(y)
+    chroma = librosa.feature.chroma_cqt(y=y_harmonic, sr=SRATE, hop_length=HOP_SIZE)
+
     # Synchronize features to onsets
-    mfcc_sync = librosa.feature.sync(mfcc, librosa.time_to_frames(onset_times, sr=SRATE,
+    mfcc_sync = librosa.feature.sync(mfcc, librosa.time_to_frames(onset_times, sr=SRATE, 
                                                                   hop_length=HOP_SIZE), pad=False)
-    cqt_sync = librosa.feature.sync(cqt, librosa.time_to_frames(onset_times, sr=SRATE,
-                                                                  hop_length=HOP_SIZE), pad=False)
+    cqt_sync = librosa.feature.sync(cqt, librosa.time_to_frames(onset_times, sr=SRATE, 
+                                                                hop_length=HOP_SIZE), pad=False)
+    chroma_sync = librosa.feature.sync(chroma, librosa.time_to_frames(onset_times, sr=SRATE, 
+                                                                      hop_length=HOP_SIZE), pad=False)
 
-    return y, onset_times, mfcc_sync, cqt_sync
+    return y, onset_times, mfcc_sync, cqt_sync, chroma_sync
 
-
-def create_onset(onset_id, song_id, start, end, onset_file, onset_audio):
-    """Creates a new onset given the onset info. Also creates onset wav file.
-
-    Parameters
-    ----------
-    onset_id : int
-        Onset identifier.
-    song_id : string
-        Song identifier (original mp3 file name)
-    start : float
-        Start time of onset within song (in seconds)
-    end : float
-        End time of onset within song (in seconds)
-    onset_file : str
-        Path to the onset file
-    onset_audio : np.array
-        Audio samples containing the actual onset audio
-
-    Returns
-    -------
-    onset_dict : dict
-        Onset data ready to be inserted into the database.
-    X : TODO
-    Y : TODO
-    """
-    onset_dict = {}
-    onset_dict["onset_id"] = onset_id
-    onset_dict["song_id"] = song_id
-    onset_dict["start"] = start
-    onset_dict["end"] = end
-    onset_dict["onset_file"] = onset_file
-
-    # Split audio and create wav
-    librosa.output.write_wav(os.path.join(onset_dir, onset_file), onset_audio,
-                             sr=SRATE, norm=False)
-    return onset_dict
-
-def compute_meshuggah_models():
-    # Get all Meshuggah audio files (sorted)
-    audio_files = glob.glob("../audio/*.mp3")
-    audio_files.sort()
-    # Compute onsets for all audio files
-    onset_id = 0
-    onset_dicts = []   # To ingest dataset
-    X = []             # MFCC matrix
-    Y = []             # CQT matrix
-    for i, audio_file in enumerate(audio_files):
-        print audio_file
-        y, onset_times, mfcc_sync, cqt_sync = compute_features(audio_file)
-
-        # Store MFCCs and CQT into big onset MFCC and CQT matrix
-        X = mfcc_sync if len(X) == 0 else np.hstack((X, mfcc_sync))
-        Y = cqt_sync if len(Y) == 0 else np.hstack((Y, cqt_sync))
-
-        # Create onsets for the current track
-        for start, end in zip(onset_times[:-1], onset_times[1:]):
-            start_end_times = librosa.time_to_samples(np.array([start, end]), sr=SRATE)
-            onset_audio = y[start_end_times[0]:start_end_times[1]]
-            onset_file = os.path.basename(audio_file)[:-4] + "-onset" + str(onset_id) + ".wav"
-            onset_dict = create_onset(onset_id, os.path.basename(audio_file),
-                                      start, end, onset_file, onset_audio)
-            onset_id += 1
-
-            # Store dictionary
-            onset_dicts.append(onset_dict)
-    return onset_dicts, X, Y
 
 def improve_log(feats):
     return np.log1p(feats[:, :] + np.abs(np.min(feats)))
 
+
 def improve_log_no_loudness(feats):
     return np.log1p(feats[:, 1:] + np.abs(np.min(feats)))
+
 
 def improve_normal(feats):
     return feats
 
-def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine', output_file='output.wav', original_w=8):
+def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine', 
+                output_file='output.wav', original_w=8):
     """Converts the given input file into a Meshuggah track and saves it into disk as a wav file.
 
     Parameters
@@ -162,18 +106,20 @@ def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine'
         One of the scipy.spatial.distance functions
     output_file : str
         Path to the output wav file
-    original_w : f
+    original_w : float
+        Weight of the original file (the higher the more original audio we'll get)
     """
-    y, onset_times, mfcc_sync, cqt_sync = compute_features(input_file)
-#     print mfcc_sync.shape, onset_times.shape
-#     assert mfcc_sync.shape[1] == cqt_sync.shape[1] and \
-#         cqt_sync.shape[1] == len(zip(onset_times[:-1], onset_times[1:])) - 1
+    y, onset_times, mfcc_sync, cqt_sync, chroma_sync = compute_features(input_file)
+    assert mfcc_sync.shape[1] == cqt_sync.shape[1] and \
+        cqt_sync.shape[1] == chroma_sync.shape[1]
 
     # Select feature
     if features.shape[0] == CQT_BINS:
         feat_sync = cqt_sync
     elif features.shape[0] == N_MFCC:
         feat_sync = mfcc_sync
+    elif features.shape[0] == N_CHROMA:
+        feat_sync = chroma_sync
 
     # Construct
     for feat, (start, end) in zip(feat_sync.T, zip(onset_times[:-1], onset_times[1:])):
@@ -204,20 +150,12 @@ def meshuggahme(input_file, features, improve_func, onset_dicts, metric='cosine'
 
         # Concatenate new audio
         w = np.min([(D[onset_id][0] + np.abs(np.min(D))) * original_w, 1])  # Normalize weight
-        print w, D[onset_id][0]
         y[start_end_samples[0]:start_end_samples[1]] = y[start_end_samples[0]:start_end_samples[1]] * w + \
             x[:start_end_samples[1] - start_end_samples[0]] * (1 - w)
 
     # Write new audio file
     librosa.output.write_wav(output_file, y, sr=SRATE)
 
-def save_models(onset_dicts, X, Y, model_dir):
-    with open(os.path.join(model_dir, "onset_dicts.pk"), "w") as fp:
-        pickle.dump(onset_dicts, fp, protocol=-1)
-    with open(os.path.join(model_dir, "X.pk"), "w") as fp:
-        pickle.dump(X, fp, protocol=-1)
-    with open(os.path.join(model_dir, "Y.pk"), "w") as fp:
-        pickle.dump(Y, fp, protocol=-1)
 
 def load_models(model_dir):
     with open(os.path.join(model_dir, "onset_dicts.pk")) as fp:
@@ -226,8 +164,11 @@ def load_models(model_dir):
         X = pickle.load(fp)
     with open(os.path.join(model_dir, "Y.pk")) as fp:
         Y = pickle.load(fp)
+    with open(os.path.join(model_dir, "Z.pk")) as fp:
+        Z = pickle.load(fp)
 
-    return onset_dicts, X, Y
+    return onset_dicts, X, Y, Z
+
 
 if __name__ == "__main__":
     # TODO add command line args to support computing original models
@@ -235,11 +176,11 @@ if __name__ == "__main__":
         print "Usage: python %s input_file" % sys.argv[0]
         sys.exit(1  )
     input_file = sys.argv[1]
-    metric = 'cosine'
-    onset_dicts, X, Y = load_models("../notes/")
+    metric = 'correlation'
+    onset_dicts, X, Y, Z = load_models("../notes/")
     output_file = "output.wav"
+    original_w = 6.5
 
-    meshuggahme(input_file, X, improve_func=improve_normal, onset_dicts=onset_dicts, metric=metric, output_file=output_file,
-                original_w=7)
-
+    meshuggahme(input_file, X, improve_func=improve_normal, onset_dicts=onset_dicts,
+                metric=metric, output_file=output_file, original_w=original_w)
     print "Created %s" % output_file
