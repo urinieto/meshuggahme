@@ -6,7 +6,7 @@ git fetch -q
 
 BRANCH=$(git branch | awk '/^[*]/{print$2}')
 
-if [ "$BRANCH" -ne "master" ]; then
+if [ "$BRANCH" != "master" ]; then
     git checkout master
 fi
 
