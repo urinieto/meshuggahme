@@ -35,18 +35,24 @@ $( document ).ready(function() {
                 var status_url = results.status_url;
                 var video_url = results.video_url;
 
-                $.ajax({
-                    url: status_url,
-                    timeout: 1000,
-                    dataType: "json", 
-                    type: 'GET'})
-                .done(function(results) {
-                    $(".js-video").attr("src", video_url);
-                    $(".js-video")[0].load();
+                function pollVideo() {
+                    $.ajax({
+                        url: status_url,
+                        type: 'GET',
+                        dataType: "json", 
+                        success : function(results) {
+                            if(results.status == "complete") {
+                                $(".js-video").attr("src", video_url);
+                                $(".js-video")[0].load();
 
-                    $(".js-loading").hide();
-                    $(".js-submit").show();
-                });
+                                $(".js-loading").hide();
+                                $(".js-submit").show();
+                            } else {
+                                setTimeout(pollVideo, 1000);
+                            }
+                        }
+                    });
+                }
             })
             .fail(function(evt) {
                 $(".js-loading").hide();
