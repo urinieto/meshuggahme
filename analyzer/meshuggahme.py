@@ -178,7 +178,7 @@ if __name__ == "__main__":
     parser.add_argument('-w',
                         '--original-weight',
                         dest="original_weight",
-                        type=int,
+                        type=float,
                         help='Weight of the original song in the output',
                         default=6.5)
     parser.add_argument('-m',
