@@ -53,6 +53,8 @@ $( document ).ready(function() {
                         }
                     });
                 }
+
+                pollVideo();
             })
             .fail(function(evt) {
                 $(".js-loading").hide();
