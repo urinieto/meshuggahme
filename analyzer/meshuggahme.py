@@ -172,13 +172,14 @@ def load_models(model_dir):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='Turn any song into a Meshuggah song!')
+        description='Turn any song into a Meshuggah song!',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('input_file',
                         help='Input song file path')
     parser.add_argument('-w',
                         '--original-weight',
                         dest="original_weight",
-                        type=int,
+                        type=float,
                         help='Weight of the original song in the output',
                         default=6.5)
     parser.add_argument('-m',
