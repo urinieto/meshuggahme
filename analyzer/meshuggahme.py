@@ -91,7 +91,7 @@ def improve_normal(feats):
     return feats
 
 def meshuggahme(input_file, features, improve_func, onset_dicts, onset_dir,
-                metric='cosine', output_file='output.wav', original_w=8.5):
+                metric='cosine', output_file='output.wav', original_w=9.5):
     """Converts the given input file into a Meshuggah track and saves it into
     disk as a wav file.
 
@@ -204,6 +204,13 @@ if __name__ == "__main__":
                         'similarities (mfcc, cqt, or chroma)',
                         default="mfcc",
                         choices=["chroma", "mfcc", "cqt"])
+    parser.add_argument('-s',
+                        '--space',
+                        dest="space",
+                        help='Space in which to perform the similarity '
+                        'calculation',
+                        default="default",
+                        choices=["deault", "log", "log_no_loudness"])
     parser.add_argument('-d',
                         '--distance-metric',
                         dest="metric",
@@ -233,7 +240,14 @@ if __name__ == "__main__":
     elif args.model == 'chroma':
         model = Z
 
-    meshuggahme(input_file, model, improve_func=improve_normal,
+    if args.space == 'default':
+        improve_func = improve_normal
+    elif args.space == 'log':
+        improve_func = improve_log
+    elif args.space == 'log_no_loudness':
+        improve_func = improve_log_no_loudness
+
+    meshuggahme(input_file, model, improve_func=improve_func,
                 onset_dicts=onset_dicts, onset_dir=args.onset_dir,
                 metric=args.metric, output_file=args.output_file,
                 original_w=args.original_weight)
