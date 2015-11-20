@@ -32,12 +32,21 @@ $( document ).ready(function() {
 
         $.ajax({url: "/muxer/mux_demux?yt_url=" + $(".js-url-input").val(), dataType: "json", type: 'GET'})
             .done(function(results) {
-                var url = results["video_url"];
-                $(".js-video").attr("src", url);
-                $(".js-video")[0].load();
+                var status_url = results.status_url;
+                var video_url = results.video_url;
 
-                $(".js-loading").hide();
-                $(".js-submit").show();
+                $.ajax({
+                    url: status_url,
+                    timeout: 1000,
+                    dataType: "json", 
+                    type: 'GET'})
+                .done(function(results) {
+                    $(".js-video").attr("src", video_url);
+                    $(".js-video")[0].load();
+
+                    $(".js-loading").hide();
+                    $(".js-submit").show();
+                });
             })
             .fail(function(evt) {
                 $(".js-loading").hide();
