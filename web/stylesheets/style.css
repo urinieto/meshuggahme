@@ -67,6 +67,19 @@ body > div:first-child {
 	height: 410px;
 	width: 100%;
 }
+
+.carousel-control {
+    height: 90%;
+}
+
+.nav-tabs {
+	border-color: #333;
+}
+.nav-tabs > li {
+	background-color: black;
+	opacity: .9;
+	border: 1px #333 solid;	
+}
 .nav-tabs > li > a {
 	border-radius: 0;
 	border-style: none;
