@@ -46,13 +46,14 @@ def muxer_worker():
             meshuggahfied_file = '{output_path}/{ytid}mm.wav'.format(
                 output_path=m.output_dir, ytid=m.ytid
             )
-            meshuggahme(
-                m.get_audio_file(), 
-                X, improve_func=improve_normal,
-                onset_dicts=onset_dicts, onset_dir=onset_dir,
-                metric='correlation', output_file=meshuggahfied_file,
-                original_w=6.5
-            )
+            if not os.path.exists(meshuggafied_file):
+                meshuggahme(
+                    m.get_audio_file(), 
+                    X, improve_func=improve_normal,
+                    onset_dicts=onset_dicts, onset_dir=onset_dir,
+                    metric='correlation', output_file=meshuggahfied_file,
+                    original_w=6.5
+                )
             with open(
                 '{output_dir}/{ytid}.status.json'.format(output_dir=output_dir, ytid=m.ytid), 'w'
             ) as f:
