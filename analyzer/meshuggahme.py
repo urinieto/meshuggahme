@@ -184,7 +184,7 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(1)
 
-    input_file = sys.argv[1]
+    input_file = args.input_file
     onset_dicts, X, Y, Z = load_models("../notes/")
 
     if args.model == 'mfcc':
