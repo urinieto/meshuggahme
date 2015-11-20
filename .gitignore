@@ -1,3 +1,9 @@
 meshuggahme.iml
+onsets/**
+
+# ignore inteliJ files
 .idea/**
 
+#ignore all wav and mp3
+*.wav
+*.mp3

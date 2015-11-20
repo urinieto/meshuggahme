@@ -23,8 +23,6 @@ def create_onset(onset_id, song_id, start, end, onset_file, onset_audio):
     -------
     onset_dict : dict
         Onset data ready to be inserted into the database.
-    X : TODO
-    Y : TODO
     """
     onset_dict = {}
     onset_dict["onset_id"] = onset_id
