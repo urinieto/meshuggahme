@@ -13,7 +13,7 @@ Convert any song into a Meshuggah song!
 ## Troubleshooting
 ### matplotlib configuration on mac
 
-If you see output like 
+If you see output like the following when running meshuggahme.py
 ```
 Traceback (most recent call last):
   File "meshuggahme.py", line 3, in <module>
@@ -31,6 +31,8 @@ Traceback (most recent call last):
 RuntimeError: Python is not installed as a framework. The Mac OS X backend will not be able to function correctly if Python is not installed as a framework. See the Python documentation for more information on installing Python as a framework on Mac OS X. Please either reinstall Python as a framework, or try one of the other backends. If you are Working with Matplotlib in a virtual enviroment see 'Working with Matplotlib in Virtual environments' in the Matplotlib FAQ
 ```
 
-you may need to add the following to your `~/.matplotlib/matplotlibrc` file:
+You may need to add the this line to your `~/.matplotlib/matplotlibrc` file:
 
-  backend: TkAgg
+```
+backend: TkAgg
+```
