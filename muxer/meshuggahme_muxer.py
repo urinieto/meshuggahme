@@ -2,11 +2,10 @@
 
 import os
 import json
+import redis
 from flask import Flask, request, abort
 from muxer import Muxer, get_ytid_from_url
 from analyzer.meshuggahme import load_models, meshuggahme, improve_normal
-from greenlet import greenlet
-from Queue import Queue
 
 app_name = 'meshuggahme_muxer'
 app = Flask(app_name)
@@ -25,42 +24,7 @@ onset_dir = os.environ.get('MESHUGGAHME_ONSET_DIR','../onsets')
 
 output_dir = os.environ['MESHUGGAHME_OUTPUT_PATH']
 
-muxer_queue = Queue()
-muxer_workers = []
-
-def greenlet_muxer_worker():
-    global muxer_queue
-    global onset_dicts, onset_dir, X, Y, Z
-
-    while True:
-        try:
-            yt_url = muxer_queue.get()
-            m = Muxer(yt_url=yt_url)
-            m.download_video()
-            m.demux()
-            m.convert_to_wav()
-            # XXX: Call meshuggahfier here, and use its output in place of m.get_audio_file() 
-            meshuggahfied_file = '{output_path}/{ytid}mm.wav'.format(
-                output_path=m.output_dir, ytid=m.ytid
-            )
-            meshuggahme(
-                m.get_audio_file(), 
-                X, improve_func=improve_normal,
-                onset_dicts=onset_dicts, onset_dir=onset_dir,
-                metric='correlation', output_file=meshuggahfied_file,
-                original_w=6.5
-            )
-            meshuggahfied_file = m.compress_wav(meshuggahfied_file)
-            m.remux(meshugahfied_file).split('/')[-1]
-            with open(
-                '{output_dir}/{ytid}.status.json'.format(output_dir=output_dir, ytid=m.ytid), 'w'
-            ) as f:
-                f.write('{"status": "complete"}')
-        except Exception as e:
-            print repr(e)
-
-for i in range(1,5):
-    muxer_workers.append(greenlet(greenlet_muxer_worker))
+redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 @app.route('/')
 def app_version():
@@ -87,7 +51,7 @@ def mux_demux():
     if yt_url is None:
         abort(400)
     ytid = get_ytid_from_url(yt_url)
-    muxer_queue.put(yt_url)
+    redis.rpush('yturls', yt_url)
     with open(
         '{output_dir}/{ytid}.status.json'.format(output_dir=output_dir, ytid=ytid), 'w'
     ) as f:
