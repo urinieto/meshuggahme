@@ -62,7 +62,7 @@ class Muxer:
         )):
             #youtube-dl --no-playlist -o {download-path}/%(id)s.%(ext)s {youtube-long-url}
             subprocess.call(
-                '{ytdl} --no-playlist -o {download_path}/{ytid}.mp4 {yt_url}'.format(
+                '{ytdl} --no-playlist -f mp4,aac -o {download_path}/{ytid}.mp4 {yt_url}'.format(
                     ytdl = self.ytdl,
                     download_path = self.download_dir,
                     ytid = self.ytid,
