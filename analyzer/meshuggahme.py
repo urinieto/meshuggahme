@@ -62,25 +62,29 @@ def compute_features(audio_file):
 
     # Compute chromagram
     y_harmonic, y_percussive = librosa.effects.hpss(y)
-    chroma = librosa.feature.chroma_cqt(y=y_harmonic, sr=SRATE, hop_length=HOP_SIZE)
+    chroma = librosa.feature.chroma_cqt(y=y_harmonic, sr=SRATE,
+                                        hop_length=HOP_SIZE)
 
     # Synchronize features to onsets
-    mfcc_sync = librosa.feature.sync(mfcc, librosa.time_to_frames(onset_times, sr=SRATE,
-                                                                  hop_length=HOP_SIZE), pad=False)
-    cqt_sync = librosa.feature.sync(cqt, librosa.time_to_frames(onset_times, sr=SRATE,
-                                                                hop_length=HOP_SIZE), pad=False)
-    chroma_sync = librosa.feature.sync(chroma, librosa.time_to_frames(onset_times, sr=SRATE,
-                                                                      hop_length=HOP_SIZE), pad=False)
+    mfcc_sync = librosa.feature.sync(
+        mfcc, librosa.time_to_frames(onset_times, sr=SRATE, hop_length=HOP_SIZE),
+        pad=False)
+    cqt_sync = librosa.feature.sync(
+        cqt, librosa.time_to_frames(onset_times, sr=SRATE, hop_length=HOP_SIZE),
+        pad=False)
+    chroma_sync = librosa.feature.sync(
+        chroma, librosa.time_to_frames(onset_times, sr=SRATE,
+                                       hop_length=HOP_SIZE), pad=False)
 
     return y, onset_times, mfcc_sync, cqt_sync, chroma_sync
 
 
 def improve_log(feats):
-    return np.log1p(feats[:, :] + np.abs(np.min(feats)))
+    return np.log1p(feats[:, :] - np.min(feats))
 
 
 def improve_log_no_loudness(feats):
-    return np.log1p(feats[:, 1:] + np.abs(np.min(feats)))
+    return np.log1p(feats[:, 1:] - np.min(feats))
 
 
 def improve_normal(feats):
@@ -88,7 +92,8 @@ def improve_normal(feats):
 
 def meshuggahme(input_file, features, improve_func, onset_dicts, onset_dir,
                 metric='cosine', output_file='output.wav', original_w=8):
-    """Converts the given input file into a Meshuggah track and saves it into disk as a wav file.
+    """Converts the given input file into a Meshuggah track and saves it into
+    disk as a wav file.
 
     Parameters
     ----------
@@ -107,9 +112,11 @@ def meshuggahme(input_file, features, improve_func, onset_dicts, onset_dir,
     output_file : str
         Path to the output wav file
     original_w : float
-        Weight of the original file (the higher the more original audio we'll get)
+        Weight of the original file (the higher the more original audio we'll
+        get)
     """
-    y, onset_times, mfcc_sync, cqt_sync, chroma_sync = compute_features(input_file)
+    y, onset_times, mfcc_sync, cqt_sync, chroma_sync = \
+        compute_features(input_file)
     assert mfcc_sync.shape[1] == cqt_sync.shape[1] and \
         cqt_sync.shape[1] == chroma_sync.shape[1]
 
@@ -121,13 +128,18 @@ def meshuggahme(input_file, features, improve_func, onset_dicts, onset_dir,
     elif features.shape[0] == N_CHROMA:
         feat_sync = chroma_sync
 
+    # Improve features
+    features = improve_func(features.T)
+
     # Construct
-    for feat, (start, end) in zip(feat_sync.T, zip(onset_times[:-1], onset_times[1:])):
+    for feat, (start, end) in zip(feat_sync.T, zip(onset_times[:-1],
+                                                   onset_times[1:])):
         # Get start and end times in samples
-        start_end_samples = librosa.time_to_samples(np.array([start, end]), sr=SRATE)
+        start_end_samples = librosa.time_to_samples(np.array([start, end]),
+                                                    sr=SRATE)
 
         # Compute minimum distance from all the matrix of onsets
-        D = distance.cdist(improve_func(features.T), improve_func(feat.reshape((1, -1))),
+        D = distance.cdist(features, improve_func(feat.reshape((1, -1))),
                            metric=metric)
         argsorted = np.argsort(D.flatten())
 
@@ -144,13 +156,16 @@ def meshuggahme(input_file, features, improve_func, onset_dicts, onset_dir,
             sort_idx += 1
 
             # Try to concatenate
-            x, sr = librosa.load(os.path.join(onset_dir, onset_dict["onset_file"]), sr=SRATE)
+            x, sr = librosa.load(os.path.join(onset_dir,
+                                              onset_dict["onset_file"]),
+                                 sr=SRATE)
             if len(y[start_end_samples[0]:start_end_samples[1]]) <= len(x):
                 break
 
         # Concatenate new audio
-        w = np.min([(D[onset_id][0] + np.abs(np.min(D))) * original_w, 1])  # Normalize weight
-        y[start_end_samples[0]:start_end_samples[1]] = y[start_end_samples[0]:start_end_samples[1]] * w + \
+        w = np.min([(D[onset_id][0] - np.min(D)) * original_w, 1])  # Normalize weight
+        y[start_end_samples[0]:start_end_samples[1]] = \
+            y[start_end_samples[0]:start_end_samples[1]] * w + \
             x[:start_end_samples[1] - start_end_samples[0]] * (1 - w)
 
     # Write new audio file
