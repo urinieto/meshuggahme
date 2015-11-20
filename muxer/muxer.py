@@ -90,9 +90,10 @@ class Muxer:
             ytid = self.ytid
         )
 
-    def convert_to_wav():
+    def convert_to_wav(self):
         subprocess.call(
             '{avconv} -i {output_path}/{ytid}.aac {output_path}/{ytid}.wav'.format(
+                avconv = self.avconv,
                 output_path = self.output_dir,
                 ytid = self.ytid
             ).split(' ')
@@ -135,5 +136,5 @@ class Muxer:
         )
         return self.remux_out
 
-    def get_output_file():
+    def get_output_file(self):
         return self.remux_out
