@@ -56,7 +56,7 @@ def mux_demux():
             'video_url': '{video_url_prefix}/{ytid}.mp4'.format(
                 video_url_prefix=video_url_prefix, ytid=ytid
             ),
-            'status_file': '{video_url_prefix}/{ytid}.status.json'.format(
+            'status_url': '{video_url_prefix}/{ytid}.status.json'.format(
                 video_url_prefix=video_url_prefix, ytid=ytid
             )
         }
