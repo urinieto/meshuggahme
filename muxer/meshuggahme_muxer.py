@@ -15,7 +15,10 @@ if pidfile and os.path.exists(os.path.dirname(pidfile)):
     with open(pidfile, 'w') as f:
         f.write(os.getpid())
 
-model_dir = os.environ.get('M
+model_dir = os.environ.get('MESHUGGAHME_MODEL_DIR','../notes')
+onset_dicts, X, Y, Z = load_models(model_dir)
+
+onset_dir = os.environ.get('MESHUGGAHME_ONSET_DIR','../onsets')
 
 @app.route('/')
 def app_version():
@@ -27,6 +30,7 @@ def bad_request():
 
 @app.route('/mux_demux', methods=['GET', 'POST'])
 def mux_demux():
+    global onset_dicts, onset_dir, X, Y, Z
     yt_url = request.args.get('yt_url', None)
     if yt_url is None:
         abort(400)
@@ -34,7 +38,18 @@ def mux_demux():
     m.download_video()
     m.demux()
     # XXX: Call meshuggahfier here, and use its output in place of m.get_audio_file() 
-    outfile = m.remux(m.get_audio_file()).split('/')[-1]
+    meshuggahfied_file = '{output_path}/{ytid}mm.wav'.format(
+        output_path=m.output_dir, ytid=m.ytid
+    )
+    meshuggahme(
+        m.get_audio_file(), 
+        X, improve_func=improve_normal,
+        onset_dicts=onset_dicts, onset_dir=onset_dir,
+        metric='correlation', output_file=meshuggahfied_file,
+        original_w=6.5
+    )
+    meshuggahfied_file = m.compress_wav(meshuggahfied_file)
+    outfile = m.remux(meshugahfied_file).split('/')[-1]
     return json.dumps(
         {
             'video_url': '{video_url_prefix}/{outfile}'.format(
