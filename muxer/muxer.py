@@ -56,15 +56,19 @@ class Muxer:
     def download_video(self, yt_url=None):
         yt_url = self.normalize_yt_url(yt_url)
 
-        #youtube-dl --no-playlist -o {download-path}/%(id)s.%(ext)s {youtube-long-url}
-        subprocess.call(
-            '{ytdl} --no-playlist -o {download_path}/{ytid}.mp4 {yt_url}'.format(
-                ytdl = self.ytdl,
-                download_path = self.download_dir,
-                ytid = self.ytid,
-                yt_url = yt_url
-            ).split(' ')
-        )
+        if not os.path.exists('{download_path}/{ytid}.mp4'.format(
+            download_path = self.download_dir,
+            ytid = self.ytid
+        ):
+            #youtube-dl --no-playlist -o {download-path}/%(id)s.%(ext)s {youtube-long-url}
+            subprocess.call(
+                '{ytdl} --no-playlist -o {download_path}/{ytid}.mp4 {yt_url}'.format(
+                    ytdl = self.ytdl,
+                    download_path = self.download_dir,
+                    ytid = self.ytid,
+                    yt_url = yt_url
+                ).split(' ')
+            )
         # XXX: Eh.  Maybe should check this actually worked?  Meh.  That's for production ready code...
         self.dl_file = '{download_path}/{ytid}.mp4'.format(
             download_path = self.download_dir,
@@ -76,23 +80,31 @@ class Muxer:
         if self.dl_file is None:
             return False
 
-        #avconv -i {download-path}/%(id)s.%(ext)s -map 0:1 -c copy {output-path}/%(id)s.aac
-        subprocess.call(  # Extract video
-            '{avconv} -y -i {dl_video} -map 0:0 -c copy {output_path}/{ytid}-silent.mp4'.format(
-                avconv = self.avconv,
-                dl_video = self.dl_file,
-                output_path = self.output_dir,
-                ytid = self.ytid
-            ).split(' ')
-        )
-        subprocess.call(  # Extract audio
-            '{avconv} -y -i {dl_video} -map 0:1 -c copy {output_path}/{ytid}.aac'.format(
-                avconv = self.avconv,
-                dl_video = self.dl_file,
-                output_path = self.output_dir,
-                ytid = self.ytid
-            ).split(' ')
-        )
+        if not os.path.exists('{output_path}/{ytid}-silent.mp4'.format(
+            output_path = self.output_dir,
+            ytid = self.ytid
+        ):
+            #avconv -i {download-path}/%(id)s.%(ext)s -map 0:1 -c copy {output-path}/%(id)s.aac
+            subprocess.call(  # Extract video
+                '{avconv} -y -i {dl_video} -map 0:0 -c copy {output_path}/{ytid}-silent.mp4'.format(
+                    avconv = self.avconv,
+                    dl_video = self.dl_file,
+                    output_path = self.output_dir,
+                    ytid = self.ytid
+                ).split(' ')
+            )
+        if not os.path.exists('{output_path}/{ytid}.aac'.format(
+            output_path = self.output_dir,
+            ytid = self.ytid
+        ):
+            subprocess.call(  # Extract audio
+                '{avconv} -y -i {dl_video} -map 0:1 -c copy {output_path}/{ytid}.aac'.format(
+                    avconv = self.avconv,
+                    dl_video = self.dl_file,
+                    output_path = self.output_dir,
+                    ytid = self.ytid
+                ).split(' ')
+            )
         # XXX: Eh.  Maybe should check this actually worked?  Meh.  That's for production ready code...
         self.silent_video_out = '{output_path}/{ytid}-silent.mp4'.format(
             output_path = self.output_dir,
@@ -100,13 +112,17 @@ class Muxer:
         )
 
     def convert_to_wav(self):
-        subprocess.call(
-            '{avconv} -y -i {output_path}/{ytid}.aac {output_path}/{ytid}.wav'.format(
-                avconv = self.avconv,
-                output_path = self.output_dir,
-                ytid = self.ytid
-            ).split(' ')
-        )
+        if not os.path.exists('{output_path}/{ytid}.wav'.format(
+            output_path = self.output_dir,
+            ytid = self.ytid
+        ):
+            subprocess.call(
+                '{avconv} -y -i {output_path}/{ytid}.aac {output_path}/{ytid}.wav'.format(
+                    avconv = self.avconv,
+                    output_path = self.output_dir,
+                    ytid = self.ytid
+                ).split(' ')
+            )
         self.audio_out = '{output_path}/{ytid}.wav'.format(
             output_path = self.output_dir,
             ytid = self.ytid
@@ -116,29 +132,37 @@ class Muxer:
         return self.audio_out
 
     def compress_wav(self, wavfile):
-        subprocess.call(
-            '{avconv} -y -i {wavfile} {output_path}/{ytid}mm.mp3'.format(
-                avconv = self.avconv,
-                wavfile = wavfile,
-                output_path = self.output_dir,
-                ytid = self.ytid
-            ).split(' ')
-        )
+        if not os.path.exists('{output_path}/{ytid}mm.mp3'.format(
+            output_path = self.output_dir,
+            ytid = self.ytid
+        ):
+            subprocess.call(
+                '{avconv} -y -i {wavfile} {output_path}/{ytid}mm.mp3'.format(
+                    avconv = self.avconv,
+                    wavfile = wavfile,
+                    output_path = self.output_dir,
+                    ytid = self.ytid
+                ).split(' ')
+            )
         return '{output_path}/{ytid}mm.mp3'.format(
             output_path = self.output_dir,
             ytid = self.ytid
         )
 
     def remux(self, new_audio_track):
-        subprocess.call(
-            '{avconv} -y -i {silent_video} -i {new_audio_track} -c copy {output_path}/{ytid}.mp4'.format(
-                avconv = self.avconv,
-                silent_video = self.silent_video_out,
-                new_audio_track = new_audio_track,
-                output_path = self.output_dir,
-                ytid = self.ytid
-            ).split(' ')
-        )
+        if not os.path.exists('{output_path}/{ytid}.mp4'.format(
+            output_path = self.output_dir,
+            ytid = self.ytid
+        ):
+            subprocess.call(
+                '{avconv} -y -i {silent_video} -i {new_audio_track} -c copy {output_path}/{ytid}.mp4'.format(
+                    avconv = self.avconv,
+                    silent_video = self.silent_video_out,
+                    new_audio_track = new_audio_track,
+                    output_path = self.output_dir,
+                    ytid = self.ytid
+                ).split(' ')
+            )
         self.remux_out = '{output_path}/{ytid}.mp4'.format(
             output_path = self.output_dir,
             ytid = self.ytid
