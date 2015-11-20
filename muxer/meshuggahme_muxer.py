@@ -4,6 +4,7 @@ import os
 import json
 from flask import Flask, request, abort
 from muxer import Muxer
+from analyzer.meshuggahme import load_models, meshuggahme
 
 app_name = 'meshuggahme_muxer'
 app = Flask(app_name)

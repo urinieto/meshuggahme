@@ -22,7 +22,7 @@ fi
 
 function meshuggahme_start() {
     if [ "$MESHUGGAHME_USE_GUNICORN" ]; then
-        $MESHUGGAHME_VENV/bin/gunicorn -D -b 127.0.0.1:5000 -w 4 meshuggahme_muxer:app
+        $MESHUGGAHME_VENV/bin/gunicorn -D -b 127.0.0.1:5000 -w 4 --pythonpath $REPO_ROOT meshuggahme_muxer:app 
     else
         python meshuggahme_muxer.py 
     fi
