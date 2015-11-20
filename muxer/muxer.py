@@ -95,7 +95,7 @@ class Muxer:
             '{avconv} -i {output_path}/{ytid}.aac {output_path}/{ytid}.wav'.format(
                 output_path = self.output_dir,
                 ytid = self.ytid
-            )
+            ).split(' ')
         )
         self.audio_out = '{output_path}/{ytid}.wav'.format(
             output_path = self.output_dir,
