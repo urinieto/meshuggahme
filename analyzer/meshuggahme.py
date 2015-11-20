@@ -15,8 +15,8 @@ N_DECIMALS = 3
 N_CHROMA = 12
 
 def compute_features(audio_file):
-    """Computes the onsets and the MFCC and CQT onset-synchronous features from the given
-    audio file path.
+    """Computes the onsets and the MFCC and CQT onset-synchronous features from
+    the given audio file path.
 
     Parameters
     ----------
@@ -52,7 +52,8 @@ def compute_features(audio_file):
         onset_times = np.concatenate((onset_times, [dur]))
 
     # Compute MFCC (timbre features)
-    mfcc = librosa.feature.mfcc(y=y, sr=SRATE, hop_length=HOP_SIZE, n_mfcc=N_MFCC)
+    mfcc = librosa.feature.mfcc(y=y, sr=SRATE, hop_length=HOP_SIZE,
+                                n_mfcc=N_MFCC)
 
     # Compute Constant-Q Transform
     cqt = librosa.logamplitude(librosa.cqt(y, sr=SRATE, hop_length=HOP_SIZE,
@@ -170,19 +171,41 @@ def load_models(model_dir):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Turn any song into a meshuggah song!')
-    parser.add_argument('input_file', help='Input song file path')
-    parser.add_argument('-w','--original-weight', dest="original_weight", type=int, help='Weight of the original song in the output', default=6.5)
-    parser.add_argument('-m','--model', dest="model", help='Feature model to use for finding onset similarities (mfcc, cqt, or chroma)', default="mfcc")
-    parser.add_argument('-d','--distance-metric', dest="metric", help='Distance metric to use when finding onset similarities (cosine)', default="correlation")
-    parser.add_argument('-a','--onset-dir', dest='onset_dir', help='Directory with meshuggah onset audio files', default="../onsets")
-    parser.add_argument('-o','--output-file', dest="output_file", help='Output file', default="output.wav")
+    parser = argparse.ArgumentParser(
+        description='Turn any song into a Meshuggah song!')
+    parser.add_argument('input_file',
+                        help='Input song file path')
+    parser.add_argument('-w',
+                        '--original-weight',
+                        dest="original_weight",
+                        type=int,
+                        help='Weight of the original song in the output',
+                        default=6.5)
+    parser.add_argument('-m',
+                        '--model',
+                        dest="model",
+                        help='Feature model to use for finding onset '
+                        'similarities (mfcc, cqt, or chroma)',
+                        default="mfcc",
+                        choices=["chroma", "mfcc", "cqt"])
+    parser.add_argument('-d',
+                        '--distance-metric',
+                        dest="metric",
+                        help='Distance metric to use when finding onset '
+                        'similarities (e.g., cosine, euclidean, correlation)',
+                        default="correlation")
+    parser.add_argument('-a',
+                        '--onset-dir',
+                        dest='onset_dir',
+                        help='Directory with meshuggah onset audio files',
+                        default="../onsets")
+    parser.add_argument('-o',
+                        '--output-file',
+                        dest="output_file",
+                        help='Output file',
+                        default="output.wav")
 
     args = parser.parse_args()
-
-    if (len(sys.argv) < 2):
-        parser.print_help()
-        sys.exit(1)
 
     input_file = args.input_file
     onset_dicts, X, Y, Z = load_models("../notes/")
@@ -191,7 +214,8 @@ if __name__ == "__main__":
         model = X
     elif args.model == 'cqt':
         model = Y
-    #TODO support chroma
+    elif args.model == 'chroma':
+        model = Z
 
     meshuggahme(input_file, model, improve_func=improve_normal,
                 onset_dicts=onset_dicts, onset_dir=args.onset_dir,
