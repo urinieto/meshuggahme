@@ -14,6 +14,15 @@ import requests
 class MissingYouTubeURL(Exception):
     pass
 
+def get_ytid_from_url(yt_url):
+    ytdomain = yt_url.split('/')[2]
+
+    if ytdomain.endswith('youtube.com'):
+        # A long time ago, I was a perl programmer...  Sorry.
+        return dict([kv.split('=') for kv in yt_url.split('?')[1].split('&')])['v']
+
+    return yt_url.split('/')[3]
+
 class Muxer:
     def __init__(self, yt_url=None):
         self.yt_url = yt_url
