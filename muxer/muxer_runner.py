@@ -5,7 +5,7 @@ import json
 import redis
 import time
 from muxer import Muxer, get_ytid_from_url
-from analyzer.meshuggahme import load_models, meshuggahme, improve_normal
+from analyzer.meshuggahme import load_models, meshuggahme, improve_normal, improve_log_no_loudness
 
 model_dir = os.environ.get('MESHUGGAHME_MODEL_DIR','../notes')
 onset_dicts, X, Y, Z = load_models(model_dir)
@@ -42,17 +42,17 @@ def muxer_worker():
                     '{output_dir}/{ytid}.status.json'.format(output_dir=output_dir, ytid=m.ytid), 'w'
                 ) as f:
                     f.write('{"status": "processing", "stage": 3}')
-                # XXX: Call meshuggahfier here, and use its output in place of m.get_audio_file() 
+                # XXX: Call meshuggahfier here, and use its output in place of m.get_audio_file()
                 meshuggahfied_file = '{output_path}/{ytid}mm.wav'.format(
                     output_path=m.output_dir, ytid=m.ytid
                 )
                 if not os.path.exists(meshuggahfied_file):
                     meshuggahme(
-                        m.get_audio_file(), 
-                        X, improve_func=improve_normal,
+                        m.get_audio_file(),
+                        X, improve_func=improve_log_no_loudness,
                         onset_dicts=onset_dicts, onset_dir=onset_dir,
                         metric='correlation', output_file=meshuggahfied_file,
-                        original_w=6.5
+                        original_w=10
                     )
                 with open(
                     '{output_dir}/{ytid}.status.json'.format(output_dir=output_dir, ytid=m.ytid), 'w'
