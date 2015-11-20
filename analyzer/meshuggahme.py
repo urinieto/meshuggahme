@@ -91,7 +91,7 @@ def improve_normal(feats):
     return feats
 
 def meshuggahme(input_file, features, improve_func, onset_dicts, onset_dir,
-                metric='cosine', output_file='output.wav', original_w=8):
+                metric='cosine', output_file='output.wav', original_w=8.5):
     """Converts the given input file into a Meshuggah track and saves it into
     disk as a wav file.
 
@@ -163,7 +163,7 @@ def meshuggahme(input_file, features, improve_func, onset_dicts, onset_dir,
                 break
 
         # Concatenate new audio
-        w = np.min([(D[onset_id][0] - np.min(D)) * original_w, 1])  # Normalize weight
+        w = np.min([D[onset_id][0] * original_w, 1])  # Rebalance weight
         y[start_end_samples[0]:start_end_samples[1]] = \
             y[start_end_samples[0]:start_end_samples[1]] * w + \
             x[:start_end_samples[1] - start_end_samples[0]] * (1 - w)
@@ -196,7 +196,7 @@ if __name__ == "__main__":
                         dest="original_weight",
                         type=float,
                         help='Weight of the original song in the output',
-                        default=6.5)
+                        default=8.5)
     parser.add_argument('-m',
                         '--model',
                         dest="model",
