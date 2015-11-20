@@ -17,11 +17,6 @@ if pidfile and os.path.exists(os.path.dirname(pidfile)):
     with open(pidfile, 'w') as f:
         f.write(os.getpid())
 
-model_dir = os.environ.get('MESHUGGAHME_MODEL_DIR','../notes')
-onset_dicts, X, Y, Z = load_models(model_dir)
-
-onset_dir = os.environ.get('MESHUGGAHME_ONSET_DIR','../onsets')
-
 output_dir = os.environ['MESHUGGAHME_OUTPUT_PATH']
 
 redis = redis.StrictRedis(host='localhost', port=6379, db=0)

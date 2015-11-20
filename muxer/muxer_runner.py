@@ -7,6 +7,11 @@ import time
 from muxer import Muxer, get_ytid_from_url
 from analyzer.meshuggahme import load_models, meshuggahme, improve_normal
 
+model_dir = os.environ.get('MESHUGGAHME_MODEL_DIR','../notes')
+onset_dicts, X, Y, Z = load_models(model_dir)
+
+onset_dir = os.environ.get('MESHUGGAHME_ONSET_DIR','../onsets')
+
 output_dir = os.environ['MESHUGGAHME_OUTPUT_PATH']
 
 redis = redis.StrictRedis(host='localhost', port=6379, db=0)
@@ -57,7 +62,7 @@ def muxer_worker():
                 '{output_dir}/{ytid}.status.json'.format(output_dir=output_dir, ytid=m.ytid), 'w'
             ) as f:
                 f.write('{"status": "processing", "stage": 5}')
-            m.remux(meshugahfied_file).split('/')[-1]
+            m.remux(meshuggahfied_file).split('/')[-1]
             with open(
                 '{output_dir}/{ytid}.status.json'.format(output_dir=output_dir, ytid=m.ytid), 'w'
             ) as f:
@@ -65,5 +70,5 @@ def muxer_worker():
         except Exception as e:
             print repr(e)
 
-if __name__ = "__main__":
+if __name__ == "__main__":
     muxer_worker()
