@@ -52,7 +52,9 @@ def greenlet_muxer_worker():
             )
             meshuggahfied_file = m.compress_wav(meshuggahfied_file)
             m.remux(meshugahfied_file).split('/')[-1]
-            with open('{output_dir}/{ytid}.status.json', 'w') as f:
+            with open(
+                '{output_dir}/{ytid}.status.json'.format(output_dir=output_dir, ytid=m.ytid), 'w'
+            ) as f:
                 f.write('{"status": "complete"}')
         except Exception as e:
             print repr(e)
@@ -71,7 +73,9 @@ def bad_request():
 @app.route('/status/<ytid>', methods=['GET'])
 def mux_demux_status(ytid):
     try:
-        with open('{output_dir}/{ytid}.status.json', 'r') as f:
+        with open(
+            '{output_dir}/{ytid}.status.json', 'r'.format(output_dir=output_dir, ytid=ytid)
+        ) as f:
             json = f.read()
         return json
     except IOError:
@@ -84,7 +88,9 @@ def mux_demux():
         abort(400)
     ytid = get_ytid_from_url(yt_url)
     muxer_queue.put(yt_url)
-    with open('{output_dir}/{ytid}.status.json', 'w') as f:
+    with open(
+        '{output_dir}/{ytid}.status.json'.format(output_dir=output_dir, ytid=ytid), 'w'
+    ) as f:
         f.write('{"status": "processing"}')
     return json.dumps(
         {
