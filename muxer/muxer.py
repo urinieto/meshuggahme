@@ -59,7 +59,7 @@ class Muxer:
         if not os.path.exists('{download_path}/{ytid}.mp4'.format(
             download_path = self.download_dir,
             ytid = self.ytid
-        ):
+        )):
             #youtube-dl --no-playlist -o {download-path}/%(id)s.%(ext)s {youtube-long-url}
             subprocess.call(
                 '{ytdl} --no-playlist -o {download_path}/{ytid}.mp4 {yt_url}'.format(
@@ -83,7 +83,7 @@ class Muxer:
         if not os.path.exists('{output_path}/{ytid}-silent.mp4'.format(
             output_path = self.output_dir,
             ytid = self.ytid
-        ):
+        )):
             #avconv -i {download-path}/%(id)s.%(ext)s -map 0:1 -c copy {output-path}/%(id)s.aac
             subprocess.call(  # Extract video
                 '{avconv} -y -i {dl_video} -map 0:0 -c copy {output_path}/{ytid}-silent.mp4'.format(
@@ -96,7 +96,7 @@ class Muxer:
         if not os.path.exists('{output_path}/{ytid}.aac'.format(
             output_path = self.output_dir,
             ytid = self.ytid
-        ):
+        )):
             subprocess.call(  # Extract audio
                 '{avconv} -y -i {dl_video} -map 0:1 -c copy {output_path}/{ytid}.aac'.format(
                     avconv = self.avconv,
@@ -115,7 +115,7 @@ class Muxer:
         if not os.path.exists('{output_path}/{ytid}.wav'.format(
             output_path = self.output_dir,
             ytid = self.ytid
-        ):
+        )):
             subprocess.call(
                 '{avconv} -y -i {output_path}/{ytid}.aac {output_path}/{ytid}.wav'.format(
                     avconv = self.avconv,
@@ -135,7 +135,7 @@ class Muxer:
         if not os.path.exists('{output_path}/{ytid}mm.mp3'.format(
             output_path = self.output_dir,
             ytid = self.ytid
-        ):
+        )):
             subprocess.call(
                 '{avconv} -y -i {wavfile} {output_path}/{ytid}mm.mp3'.format(
                     avconv = self.avconv,
@@ -153,7 +153,7 @@ class Muxer:
         if not os.path.exists('{output_path}/{ytid}.mp4'.format(
             output_path = self.output_dir,
             ytid = self.ytid
-        ):
+        )):
             subprocess.call(
                 '{avconv} -y -i {silent_video} -i {new_audio_track} -c copy {output_path}/{ytid}.mp4'.format(
                     avconv = self.avconv,
