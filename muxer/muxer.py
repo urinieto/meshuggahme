@@ -89,7 +89,15 @@ class Muxer:
             output_path = self.output_dir,
             ytid = self.ytid
         )
-        self.audio_out = '{output_path}/{ytid}.aac'.format(
+
+    def convert_to_wav():
+        subprocess.call(
+            '{avconv} -i {output_path}/{ytid}.aac {output_path}/{ytid}.wav'.format(
+                output_path = self.output_dir,
+                ytid = self.ytid
+            )
+        )
+        self.audio_out = '{output_path}/{ytid}.wav'.format(
             output_path = self.output_dir,
             ytid = self.ytid
         )
@@ -99,14 +107,14 @@ class Muxer:
 
     def compress_wav(self, wavfile):
         subprocess.call(
-            '{avconv} -y -i {wavfile} -acodec aac -strict experimental {output_path}/{ytid}mm.aac'.format(
+            '{avconv} -y -i {wavfile} {output_path}/{ytid}mm.mp3'.format(
                 avconv = self.avconv,
                 wavfile = wavfile,
                 output_path = self.output_dir,
                 ytid = self.ytid
             ).split(' ')
         )
-        return '{output_path}/{ytid}mm.aac'.format(
+        return '{output_path}/{ytid}mm.mp3'.format(
             output_path = self.output_dir,
             ytid = self.ytid
         )
@@ -129,6 +137,3 @@ class Muxer:
 
     def get_output_file():
         return self.remux_out
-
-# Needed methods:
-#   Mux audio+video

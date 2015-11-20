@@ -38,6 +38,7 @@ def mux_demux():
     m = Muxer(yt_url=yt_url)
     m.download_video()
     m.demux()
+    m.convert_to_wav()
     # XXX: Call meshuggahfier here, and use its output in place of m.get_audio_file() 
     meshuggahfied_file = '{output_path}/{ytid}mm.wav'.format(
         output_path=m.output_dir, ytid=m.ytid
