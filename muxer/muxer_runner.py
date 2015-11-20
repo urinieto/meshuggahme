@@ -46,7 +46,7 @@ def muxer_worker():
             meshuggahfied_file = '{output_path}/{ytid}mm.wav'.format(
                 output_path=m.output_dir, ytid=m.ytid
             )
-            if not os.path.exists(meshuggafied_file):
+            if not os.path.exists(meshuggahfied_file):
                 meshuggahme(
                     m.get_audio_file(), 
                     X, improve_func=improve_normal,
